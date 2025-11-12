@@ -1,0 +1,8 @@
+node_modules/
+*.local
+.env
+.env.local
+.env.*.local
+test-aws.js
+*.log
+.DS_Store
