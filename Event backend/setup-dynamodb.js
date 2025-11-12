@@ -6,10 +6,10 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load environment variables
+
 dotenv.config({ path: join(__dirname, 'event-planner-capstone', '.env.local') });
 
-// Configure AWS
+
 AWS.config.update({
   region: process.env.VITE_AWS_REGION || 'us-east-1',
   accessKeyId: process.env.VITE_AWS_ACCESS_KEY_ID,
@@ -19,10 +19,10 @@ AWS.config.update({
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-// Table configuration
+
 const TABLE_NAME = 'Events';
 
-// Create Events table
+
 async function createEventsTable() {
   const params = {
     TableName: TABLE_NAME,
@@ -32,7 +32,7 @@ async function createEventsTable() {
     AttributeDefinitions: [
       { AttributeName: 'eventId', AttributeType: 'S' }
     ],
-    BillingMode: 'PAY_PER_REQUEST' // On-demand pricing (no need to specify capacity)
+    BillingMode: 'PAY_PER_REQUEST' 
   };
 
   try {
@@ -40,7 +40,7 @@ async function createEventsTable() {
     await dynamodb.createTable(params).promise();
     console.log('✅ Table created successfully!');
     
-    // Wait for table to be active
+    
     await dynamodb.waitFor('tableExists', { TableName: TABLE_NAME }).promise();
     console.log('✅ Table is now active and ready to use!');
   } catch (error) {
@@ -53,7 +53,7 @@ async function createEventsTable() {
   }
 }
 
-// Example: Add an event
+
 async function addEvent(event) {
   const params = {
     TableName: TABLE_NAME,
@@ -78,7 +78,7 @@ async function addEvent(event) {
   }
 }
 
-// Example: Get all events
+
 async function getAllEvents() {
   const params = {
     TableName: TABLE_NAME
@@ -94,7 +94,7 @@ async function getAllEvents() {
   }
 }
 
-// Example: Delete an event
+
 async function deleteEvent(eventId) {
   const params = {
     TableName: TABLE_NAME,
@@ -110,12 +110,12 @@ async function deleteEvent(eventId) {
   }
 }
 
-// Run setup
+
 async function setup() {
   try {
     await createEventsTable();
     
-    // Test by adding a sample event
+    
     console.log('\nTesting with a sample event...');
     const sampleEvent = {
       name: 'Team Meeting',
@@ -134,10 +134,10 @@ async function setup() {
   }
 }
 
-// Export functions for use in your API
+
 export { addEvent, getAllEvents, deleteEvent, docClient, TABLE_NAME };
 
-// Run setup if this file is executed directly
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   setup();
 }
