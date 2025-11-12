@@ -6,14 +6,22 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Load environment variables from .env file
+dotenv.config({ path: join(__dirname, '.env') });
 
-dotenv.config({ path: join(__dirname, 'event-planner-capstone', '.env.local') });
-
+// Debug: Check if credentials are loaded
+console.log('AWS Credentials loaded:', {
+  region: process.env.AWS_REGION,
+  hasAccessKey: !!process.env.AWS_ACCESS_KEY_ID,
+  hasSecretKey: !!process.env.AWS_SECRET_ACCESS_KEY
+});
 
 AWS.config.update({
-  region: process.env.VITE_AWS_REGION || 'us-east-1',
-  accessKeyId: process.env.VITE_AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.VITE_AWS_SECRET_ACCESS_KEY
+  region: process.env.AWS_REGION || 'us-east-1',
+  credentials: new AWS.Credentials({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  })
 });
 
 const dynamodb = new AWS.DynamoDB();

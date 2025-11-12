@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_URL = 'https://xk7wr3rd0d.execute-api.us-east-1.amazonaws.com/default/My-Eventapi';
+const API_URL = 'http://localhost:3000/api';
 
 function App() {
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ name: '', date: '', time: '', location: '', description: '' });
+  const [newEvent, setNewEvent] = useState({ name: '', date: '', time: '', location: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch events on component mount
+ 
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -49,7 +49,7 @@ function App() {
       
       const addedEvent = await response.json();
       setEvents(prev => [...prev, addedEvent]);
-      setNewEvent({ name: '', date: '', time: '', location: '', description: '' });
+      setNewEvent({ name: '', date: '', time: '', location: '' });
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -105,7 +105,6 @@ function App() {
                 <p>Date: {event.date}</p>
                 <p>Time: {event.time}</p>
                 <p>Location: {event.location}</p>
-                <p>{event.description}</p>
                 <button 
                   onClick={() => handleDeleteEvent(event.eventId)}
                   className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mt-2'
@@ -153,22 +152,13 @@ function App() {
             placeholder='Event Location'
             required
           />
-          <textarea
-            name='description'
-            value={newEvent.description}
-            onChange={handleInputChange}
-            placeholder='Event Description'
-            rows="3"
-          />
-          <div>
-            <button 
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              disabled={loading}
-            >
-              {loading ? 'Adding...' : 'Add Event'}
-            </button>
-          </div>
+          <button 
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            disabled={loading}
+          >
+            {loading ? 'Adding...' : 'Add Event'}
+          </button>
         </form>
       </div>
 
