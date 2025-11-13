@@ -14,10 +14,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Check if user is already logged in
-  useEffect(() => {
-    checkUser();
-  }, []);
+  useEffect(() => {checkUser();}, []);
 
   const checkUser = async () => {
     try {
@@ -110,7 +107,6 @@ function App() {
     }
   };
 
-  // Show loading while checking authentication
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -119,7 +115,6 @@ function App() {
     );
   }
 
-  // Show auth screen if not logged in
   if (!user) {
     return <Auth onAuthSuccess={checkUser} />;
   }
@@ -140,11 +135,8 @@ function App() {
       </div>
 
       {error && (
-        <div className="bg-red-500 text-white p-4 rounded mb-4">
-          Error: {error}
-        </div>
+        <div className="bg-red-500 text-white p-4 rounded mb-4">Error: {error}</div>
       )}
-
       <div>
         <h2>Upcoming Events</h2>
         {loading ? (
@@ -167,7 +159,6 @@ function App() {
           </ul>
         )}
       </div>
-
       <div>
         <form onSubmit={handleAddEvent}>
           <input type='text' name='name' value={newEvent.name} onChange={handleInputChange} 
