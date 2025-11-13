@@ -7,6 +7,7 @@ export default function Auth({ onAuthSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [username, setUsername] = useState(''); // Store generated username
   const [confirmationCode, setConfirmationCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,13 +18,18 @@ export default function Auth({ onAuthSuccess }) {
     setError('');
 
     try {
+      // Generate a unique username (not email format) since user pool uses email alias
+      const generatedUsername = `user_${Date.now()}`;
+      setUsername(generatedUsername); // Store for confirmation
+      
       await signUp({
-        username: email,
+        username: generatedUsername,
         password,
         options: {
           userAttributes: {
             email,
             name,
+            preferred_username: generatedUsername,
           },
         },
       });
@@ -43,7 +49,7 @@ export default function Auth({ onAuthSuccess }) {
 
     try {
       await confirmSignUp({
-        username: email,
+        username: username, // Use the stored username, not email
         confirmationCode,
       });
       setNeedsConfirmation(false);
