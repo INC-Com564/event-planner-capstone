@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://event-planner-capstone.onrender.com/api';
 
 function App() {
   const [events, setEvents] = useState([]);
