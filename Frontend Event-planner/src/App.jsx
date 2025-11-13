@@ -1,18 +1,40 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import './amplifyConfig'
+import Auth from './Auth'
+import { getCurrentUser, signOut, fetchAuthSession } from 'aws-amplify/auth'
 
 const API_URL = 'https://event-planner-capstone.onrender.com/api';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ name: '', date: '', time: '', location: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Check if user is already logged in
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
  
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    if (user) {
+      fetchEvents();
+    }
+  }, [user]);
 
   const fetchEvents = async () => {
     try {
@@ -78,9 +100,41 @@ function App() {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setUser(null);
+      setEvents([]);
+    } catch (err) {
+      console.error('Error signing out:', err);
+    }
+  };
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show auth screen if not logged in
+  if (!user) {
+    return <Auth onAuthSuccess={checkUser} />;
+  }
+
   return (
     <>
-      <h1>Event Calendar</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1>Event Calendar</h1>
+        <button
+          onClick={handleSignOut}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Sign Out
+        </button>
+      </div>
       <div className="card">
         <img src="https://gdoc.io/uploads/printable-monthly-calendar-free-google-docs-template-t-1712x1239.webp" alt="Calendar" />
       </div>
@@ -105,13 +159,9 @@ function App() {
                 <p>Date: {event.date}</p>
                 <p>Time: {event.time}</p>
                 <p>Location: {event.location}</p>
-                <button 
-                  onClick={() => handleDeleteEvent(event.eventId)}
+                <button onClick={() => handleDeleteEvent(event.eventId)}
                   className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mt-2'
-                  disabled={loading}
-                >
-                  Delete
-                </button>
+                  disabled={loading}>Delete</button>
               </li>
             ))}
           </ul>
@@ -120,48 +170,26 @@ function App() {
 
       <div>
         <form onSubmit={handleAddEvent}>
-          <input 
-            type='text' 
-            name='name' 
-            value={newEvent.name} 
-            onChange={handleInputChange} 
+          <input type='text' name='name' value={newEvent.name} onChange={handleInputChange} 
             placeholder="Event Name"
             required
           />
-          <input 
-            type='date' 
-            name='date' 
-            value={newEvent.date} 
-            onChange={handleInputChange}
+          <input type='date' name='date' value={newEvent.date} onChange={handleInputChange}
             placeholder='Event Date'
             required
           />
-          <input 
-            type='time' 
-            name='time' 
-            value={newEvent.time} 
-            onChange={handleInputChange} 
+          <input type='time' name='time' value={newEvent.time} onChange={handleInputChange} 
             placeholder='Event Time'
             required
           />
-          <input 
-            type='text' 
-            name='location' 
-            value={newEvent.location} 
-            onChange={handleInputChange} 
+          <input type='text' name='location' value={newEvent.location} onChange={handleInputChange} 
             placeholder='Event Location'
             required
           />
-          <button 
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            disabled={loading}
-          >
-            {loading ? 'Adding...' : 'Add Event'}
-          </button>
+          <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" disabled={loading}>
+            {loading ? 'Adding...' : 'Add Event'}</button>
         </form>
       </div>
-
       <p className="read-the-docs">Add events to your calendar</p>
     </>
   )
