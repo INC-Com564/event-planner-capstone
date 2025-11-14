@@ -35,8 +35,8 @@ Full-stack serverless architecture using AWS DynamoDB for scalability, with a mo
 - `POST   /api/events` → Create a new event
 - `DELETE /api/events/:eventId` → Delete an event by ID
 
-**Lambda API (Configured):**
-- Same routes available at: `https://xk7wr3rd0d.execute-api.us-east-1.amazonaws.com/default/My-Eventapi`
+**Render API (Configured):**
+- Same routes available at: `https://event-planner-capstone.onrender.com/`
 
 ---
 
@@ -73,7 +73,7 @@ Full-stack serverless architecture using AWS DynamoDB for scalability, with a mo
 ## Deployment Plan
 
 **Frontend:**
-- Platform: Vercel or AWS S3 + CloudFront
+- Platform: AWS S3 + CloudFront
 - Build: `npm run build` (Vite production build)
 - URL: TBD
 
@@ -167,8 +167,6 @@ DynamoDB table "Events" is already created in AWS us-east-1 region.
 - React frontend with Tailwind CSS
 - Event creation, viewing, and deletion
 - Error handling and loading states
-
-⚠️ **In Progress / TODO:**
 - Authentication implementation
 - Protected routes
 - Backend deployment (Lambda or Render)
@@ -182,16 +180,15 @@ DynamoDB table "Events" is already created in AWS us-east-1 region.
 
 1. **Start Backend:**
    ```bash
-   cd "Event backend" && node index.js
+   cd "/Users/Isaiah/Documents/Github/event-planner-capstone/Event backend" && node index.js
    ```
 
 2. **Start Frontend:**
    ```bash
-   cd "Frontend Event-planner" && npm run dev
+   cd "/Users/Isaiah/Documents/Github/event-planner-capstone/Frontend Event-planner" && npm run dev
    ```
 
-3. **Access:** http://localhost:5173
-
+3. **Access:** http://localhost:5173, http://event-plan.s3-website-us-east-1.amazonaws.com, https://event-planner-capstone.onrender.com
 ---
 
 ## API Documentation
